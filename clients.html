@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблица клиентов</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #09011A;
+            margin: 20px;
+            color: #E0D6F0;
+        }
+        .table-container {
+            overflow-x: auto;
+            background: linear-gradient(145deg, #1a012f, #0e001a);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(114, 1, 189, 0.15);
+            border: 1px solid #2a0155;
+            padding: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        th {
+            background: linear-gradient(135deg, #380370, #7201BD);
+            color: white;
+            font-weight: 700;
+            text-align: left;
+            padding: 18px 14px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: none;
+            position: relative;
+        }
+        th:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #2a0155;
+            vertical-align: top;
+            font-size: 14px;
+            line-height: 1.6;
+            background-color: rgba(26, 1, 47, 0.7);
+            transition: background-color 0.2s ease;
+        }
+        tr:hover td {
+            background-color: rgba(56, 3, 112, 0.2);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .company-name {
+            font-weight: bold;
+            color: #D0B8FF;
+            font-size: 15px;
+        }
+        .industry {
+            color: #B09ACF;
+            font-size: 13px;
+            margin-top: 4px;
+            display: block;
+        }
+        .revenue {
+            font-weight: bold;
+            color: #9A6BD4;
+            text-align: right;
+            white-space: nowrap;
+            font-size: 15px;
+        }
+        .link {
+            color: #A67FE0;
+            text-decoration: none;
+            border-bottom: 1px dashed #9A6BD4;
+            padding-bottom: 1px;
+            transition: all 0.2s ease;
+        }
+        .link:hover {
+            color: #D0B8FF;
+            border-bottom-style: solid;
+            border-bottom-color: #D0B8FF;
+        }
+        .note {
+            background-color: rgba(114, 1, 189, 0.1);
+            padding: 10px 12px;
+            border-left: 4px solid #7201BD;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #D0B8FF;
+            border-radius: 0 4px 4px 0;
+        }
+        .tag {
+            display: inline-block;
+            background-color: rgba(56, 3, 112, 0.4);
+            color: #C9ABF0;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 2px 4px 2px 0;
+            font-weight: 500;
+            border: 1px solid #4a0277;
+        }
+        .section-title {
+            font-size: 28px;
+            color: #E0D6F0;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #380370;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        /* Стили для отраслевых меток */
+        .industry-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 2px 0;
+        }
+        .industry-metallurgy {
+            background-color: rgba(114, 1, 189, 0.25);
+            color: #C9ABF0;
+            border: 1px solid #7201BD;
+        }
+        .industry-oilgas {
+            background-color: rgba(86, 1, 142, 0.25);
+            color: #B89AD9;
+            border: 1px solid #56018E;
+        }
+        .industry-energy {
+            background-color: rgba(152, 1, 255, 0.25);
+            color: #D8C4FF;
+            border: 1px solid #9801FF;
+        }
+        .industry-chemical {
+            background-color: rgba(68, 1, 112, 0.25);
+            color: #A98AC9;
+            border: 1px solid #440170;
+        }
+        .industry-mining {
+            background-color: rgba(100, 1, 165, 0.25);
+            color: #C5A5E5;
+            border: 1px solid #6401A5;
+        }
+        /* Стили для заголовка таблицы */
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+        .table-stats {
+            font-size: 13px;
+            color: #B09ACF;
+            background-color: rgba(56, 3, 112, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #380370;
+        }
+        /* Стили для четных строк */
+        tr:nth-child(even) td {
+            background-color: rgba(20, 1, 35, 0.5);
+        }
+        tr:nth-child(even):hover td {
+            background-color: rgba(56, 3, 112, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="section-title">КЛИЕНТЫ</div>
+    
+    <div class="table-header">
+        <div class="table-stats">10 компаний • Выручка от 508 млрд до 8.6 трлн ₽</div>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Клиент</th>
+                    <th>Отрасль</th>
+                    <th>ESG-отчётность</th>
+                    <th>Мотивация и потребности</th>
+                    <th>Выручка</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="company-name">ФосАгро</span>
+                        <span class="industry">производство фосфорных удобрений и сопутствующих продуктов; крупные заводы в Череповце, Колпино и др.</span>
+                    </td>
+                    <td><span class="industry-tag industry-chemical">Химическая промышленность</span></td>
+                    <td>
+                        <a href="https://ar2023.phosagro.ru/operational-performance/environmental-review?utm_source=chatgpt.com" class="link">отчёт об устойчивом развитии 2023</a><br>
+                        <a href="https://raex-rr.com/files/ratings/RAEX_Report_Phosagro_2023.pdf?utm_source=chatgpt.com" class="link">RAEX: высокая экосредая оценка (AA[E])</a>
+                    </td>
+                    <td>ФосАгро активно декларирует экологические программы и цифровизацию — значит коммерческий интерес к мониторингу и верификации данных есть.</td>
+                    <td class="revenue">≈ 508 млрд ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">En+ Group (ЭН+ / энерго-алюминий)</span>
+                        <span class="industry">алюминий (РУСАЛ вх.активы), гидроэнергетика, энергетика; крупные электростанции и технологические площадки.</span>
+                    </td>
+                    <td>
+                        <span class="industry-tag industry-energy">Энергетика</span><br>
+                        <span class="industry-tag industry-metallurgy">Металлургия</span>
+                    </td>
+                    <td>
+                        <a href="https://enplusgroup.com/upload/iblock/f4f/61bu0vdrcw3p126y0ad6tf6nkohf3e7n/En_ESG-presentation_2023_eng.pdf?utm_source=chatgpt.com" class="link">Consolidated / Sustainability reports 2023–2024</a><br>
+                        <a href="https://enplusgroup.com/en/sustainability/sustainability-report/?utm_source=chatgpt.com" class="link">документы содержат детальную экологическую декларацию, цели Net Zero</a>
+                    </td>
+                    <td>Крупная энергетическая и металлургическая инфраструктура, потребность в мониторинге воздушных выбросов и управлении парниковыми выбросами. Большие площадки, регуляторные требования по выбросам, публичные цели Net-Zero, цифровизация.</td>
+                    <td class="revenue">≈1 360 млрд ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">РУСАЛ</span>
+                        <span class="industry">производство первичного алюминия, обжиг, переработка; крупные металлургические заводы</span>
+                    </td>
+                    <td><span class="industry-tag industry-metallurgy">Металлургия</span></td>
+                    <td>
+                        <a href="https://rusal.ru/en/sustainability/report/?utm_source=chatgpt.com" class="link">Страница отчетности / Sustainability reports 2023–2024.</a><br>
+                        <a href="https://www.responsibilityreports.com/Company/rusal?utm_source=chatgpt.com" class="link">у русала закрыт последний отчет)))</a>
+                    </td>
+                    <td>Крупные стационарные источники выбросов (пыль, NOx, SOx и т.д.), сильная регуляторная и репутационная мотивация для качественного мониторинга и моделирования.</td>
+                    <td class="revenue">≈1 122 млрд ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">ЛУКОЙЛ</span>
+                        <span class="industry">добыча нефти и газа, НПЗ, нефтепереработка, логистика</span>
+                    </td>
+                    <td><span class="industry-tag industry-oilgas">Нефтегазовый комплекс</span></td>
+                    <td>
+                        <a href="https://lukoil.ru/Sustainability/SustainabilityReport?utm_source=chatgpt.com" class="link">Отчёт об устойчивом развитии 2023</a><br>
+                        <a href="https://www.lukoil.com/Sustainability/SustainabilityReport/Archive?utm_source=chatgpt.com" class="link">Подробные секции по промышленной безопасности, выбросам в атмосферу</a>
+                    </td>
+                    <td>
+                        Мониторинг утечек, моделирование аварийных диффузий, соответствие разрешениям (НВОС), реагирование на жалобы населения; также значимы репутационные риски.
+                        <div class="note">Выручка: ≈ 8.6 трлн ₽</div>
+                    </td>
+                    <td class="revenue">≈ 8.6 трлн ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">Газпром нефть</span>
+                        <span class="industry">добыча и переработка нефти, НПЗ, розница</span>
+                    </td>
+                    <td><span class="industry-tag industry-oilgas">Нефтегазовый комплекс</span></td>
+                    <td>
+                        <a href="https://ir.gazprom-neft.ru/upload/iblock/934/y81vp8j4sqetfmkpnq6410yp42ihqef9/GPN_CSR_2023.pdf?utm_source=chatgpt.com" class="link">Интегрированный / CSR / экологический отчёт 2023.</a><br>
+                        <a href="https://sustainability.gazpromreport.ru/2023/environment-and-environmental-policy/environmental-protection/?utm_source=chatgpt.com" class="link">Экологические разделы по выбросам, СЭМ (ISO14001), климатической стратегии до 2050.</a>
+                    </td>
+                    <td>Добычные площадки и НПЗ — зоны воздействия воздуха; нужны системы мониторинга, моделирования аварийных выбросов, интеграция с промышленной безопасностью.</td>
+                    <td class="revenue">≈ 4.1 трлн ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">Татнефть</span>
+                        <span class="industry">добыча и НПЗ (Татнефть — крупный региональный игрок в Татарстане)</span>
+                    </td>
+                    <td><span class="industry-tag industry-oilgas">Нефтегазовый комплекс</span></td>
+                    <td>
+                        <a href="https://www.tatneft.ru/uploads/publications/664f5a92e0627920417297.pdf?utm_source=chatgpt.com" class="link">Интегрированный годовой отчет / Sustainability 2023.</a><br>
+                        <a href="https://www.tatneft.ru/uploads/publications/664f5a92e0627920417297.pdf?utm_source=chatgpt.com" class="link">Отчёт раскрывает экологические инициативы, сокращение воздействий</a>
+                    </td>
+                    <td>Региональная добыча + НПЗ = потребность в локальном мониторинге, аварийном прогнозировании для защиты населённых пунктов; отчёты компании декларируют цифровизацию и экопроекты.</td>
+                    <td class="revenue">≈ 2.0 трлн ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">РусГидро</span>
+                        <span class="industry">гидроэнергетика, строительство ГЭС, эксплуатация гидроузлов</span>
+                    </td>
+                    <td><span class="industry-tag industry-energy">Энергетика</span></td>
+                    <td>
+                        <a href="https://ar2023.rushydro.ru/?utm_source=chatgpt.com" class="link">Отчёт об устойчивом развитии 2023.</a><br>
+                        <a href="https://ar2023.rushydro.ru/?utm_source=chatgpt.com" class="link">Большая доля низкоуглеродной генерации; экологические риски, мониторинг водных/воздушных параметров</a>
+                    </td>
+                    <td>У гидроэнергетики меньше постоянных воздушных токсичных выбросов, но есть строительные/ремонтные источники, пыль от стройработ и потребность в оценке воздействия проектов на население и воздух; также есть программы цифровизации. Для некоторых объектов (строительства, карьеры, ТЭЦ) сервис релевантен.</td>
+                    <td class="revenue">≈ 643 млрд ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">ММК (ПАО «Магнитогорский МК»)</span>
+                        <span class="industry">крупный металлургический комбинат (сталь, прокат)</span>
+                    </td>
+                    <td><span class="industry-tag industry-metallurgy">Металлургия</span></td>
+                    <td>
+                        <a href="https://mmk.ru/ru/press-center/news/mmk-opublikoval-otchet-ob-ustoychivom-razvitii-za-2023-god/?utm_source=chatgpt.com" class="link">Отчёт об устойчивом развитии 2023 (MMK).</a><br>
+                        <a href="https://mmk.ru/ru/sustainability/?utm_source=chatgpt.com" class="link">Отчёт содержит разделы по охране окружающей среды, данные по снижению СО₂</a>
+                    </td>
+                    <td>Крупный металлургический комбинат: пыль, газовые выбросы, соседство с населёнными пунктами.</td>
+                    <td class="revenue">≈ 768 млрд ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">НЛМК</span>
+                        <span class="industry">сталь, прокат, металлургия</span>
+                    </td>
+                    <td><span class="industry-tag industry-metallurgy">Металлургия</span></td>
+                    <td>
+                        <a href="https://www.akm.ru/upload/akmrating/NLMK-sustainability-report_2023.pdf?utm_source=chatgpt.com" class="link">Отчёты об устойчивом развитии / годовые отчёты 2022–2023.</a><br>
+                        <a href="https://nlmk.com/ru/sustainability/?utm_source=chatgpt.com" class="link">Публикуются экологические политики, отчёты по выбросам, планы по декарбонизации.</a>
+                    </td>
+                    <td>
+                        см.выше 
+                        <div class="note">Выручка: ≈ 508 млрд ₽ (выросла ≈ +15% г/г; 2023 ≈ 440 млрд ₽)</div>
+                    </td>
+                    <td class="revenue">≈ 508 млрд ₽</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="company-name">Полюс</span>
+                        <span class="industry">добыча золота, горная добыча, хвостохранилища</span>
+                    </td>
+                    <td><span class="industry-tag industry-mining">Горнодобывающая</span></td>
+                    <td>
+                        <a href="https://sustainability.polyus.com/ru/esg_data_and_reports/?utm_source=chatgpt.com" class="link">Страница ESG и Отчёт об устойчивом развитии 2023.</a><br>
+                        <a href="https://sustainability.polyus.com/ru/esg_data_and_reports/?utm_source=chatgpt.com" class="link">В отчёте — данные по хвостохранилищам, водному и воздушному контролю</a>
+                    </td>
+                    <td>
+                        Мониторинг пыли, моделирование распространения взвешенных частиц при взрывных/горных работах и визуализация риска для населённых пунктов и реабилитации хвостохранилищ. 
+                        <div class="note">Выручка: ≈ 508 млрд ₽ (выросла ≈ +15% г/г; 2023 ≈ 440 млрд ₽)</div>
+                    </td>
+                    <td class="revenue">≈ 508 млрд ₽</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
